@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit user</title>
+</head>
+
+<body>
+<form th:method="POST" th:action="@{/admin/edit/{id}(id=${user.getId()})}" th:object="${user}">
+    <input type="hidden" name="_method" value="PATCH"/>
+    <div style="text-align: center;">
+        <label for="id">Enter the ID of the user you want to edit:</label>
+        <br>
+        <input type="text" th:field="*{id}" id="id"/>
+        <br>
+        <br>
+        <label for="firstName">Enter new first name:</label>
+        <br>
+        <input type="text" th:field="*{firstName}" id="firstName"/>
+        <br>
+        <br>
+        <label for="lastName">Enter new last name:</label>
+        <br>
+        <input type="text" th:field="*{lastName}" id="lastName"/>
+        <br>
+        <br>
+        <label for="age">Enter new age:</label>
+        <br>
+        <input type="text" th:field="*{age}" id="age"/>
+        <br>
+        <br>
+        <label for="email">Enter new email:</label>
+        <br>
+        <input type="text" th:field="*{email}" id="email"/>
+        <br>
+        <br>
+        <label for="password">Enter new password:</label>
+        <br>
+        <input type="text" th:field="*{password}" id="password"/>
+        <br>
+        <br>
+        <input type="submit" value="Edit user"/>
+        <br>
+        <br>
+        <form method="GET" action="/logout">
+            <input type="submit" value="Logout"/>
+        </form>
+    </div>
+</form>
+</body>
+
+</html>

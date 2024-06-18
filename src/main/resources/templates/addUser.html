@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add user</title>
+</head>
+
+<body>
+
+<form th:method="POST" th:action="@{/admin/add}" th:object="${user}">
+    <div style="text-align: center;">
+        <label for="firstName">First name</label>
+        <input type="text" th:field="*{firstName}" id="firstName"/>
+        <br>
+        <br>
+        <label for="lastName">Last name</label>
+        <input type="text" th:field="*{lastName}" id="lastName"/>
+        <br>
+        <br>
+        <label for="age">Age</label>
+        <input type="text" th:field="*{age}" id="age"/>
+        <br>
+        <br>
+        <label for="email">Email</label>
+        <input type="text" th:field="*{email}" id="email" required/>
+        <br>
+        <br>
+        <label for="password">Password</label>
+        <input type="text" th:field="*{password}" id="password" required/>
+        <br>
+        <br>
+<!--        <label for="role-select">Select role</label>-->
+<!--        <select name="roles" id="role-select">-->
+<!--            <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role}"> </option>-->
+<!--        </select>-->
+        <th:block th:each="role: ${roles}">
+            <input type="checkbox" th:field="*{roles}"
+                   th:text="${role.name}" th:value="${role.id}" class="m-2" />
+        </th:block>
+        <br>
+        <br>
+        <input type="submit" value="Add user"/>
+        <br>
+        <br>
+        <form method="GET" action="/logout">
+            <input type="submit" value="Logout"/>
+        </form>
+    </div>
+</form>
+
+</body>
+
+</html>
