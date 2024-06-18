@@ -36,7 +36,6 @@ public class User implements UserDetails {
     @JoinTable(name = "user_roles")
     private Set<Role> roles;
 
-
     public User() {
 
     }

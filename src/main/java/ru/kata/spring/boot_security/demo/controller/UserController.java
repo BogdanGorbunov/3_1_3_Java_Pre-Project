@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
-import java.security.Principal;
-
 @Controller
 @RequestMapping()
 public class UserController {

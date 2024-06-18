@@ -4,33 +4,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
 @Transactional
 public class UserService implements UserDetailsService {
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
@@ -44,8 +37,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getAllUsers() {
-        String jpql = "SELECT user FROM User user";
-        return entityManager.createQuery(jpql, User.class).getResultList();
+        return userRepository.findAll();
     }
 
     public List<Role> listRoles() {
@@ -56,27 +48,32 @@ public class UserService implements UserDetailsService {
         if (userRepository.findByEmail(user.getUsername()) != null) {
             return false;
         }
+        user.setPassword(passwordEncoder().encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }
 
     public boolean deleteUser(Long id) {
-        if (entityManager.find(User.class, id) == null) {
+        if (userRepository.findById(id).isEmpty()) {
             return false;
         }
-        entityManager.remove(entityManager.find(User.class, id));
+        userRepository.deleteById(id);
         return true;
     }
 
     public boolean changeUser(Long id, String newFirstName, String newLastName, String newAge, String newEmail, String newPassword) {
-        if (entityManager.find(User.class, id) == null) {
+        if (userRepository.findById(id).isEmpty()) {
             return false;
         }
-        entityManager.find(User.class, id).setFirstName(newFirstName);
-        entityManager.find(User.class, id).setLastName(newLastName);
-        entityManager.find(User.class, id).setAge(newAge);
-        entityManager.find(User.class, id).setEmail(newEmail);
-        entityManager.find(User.class, id).setPassword(newPassword);
+        userRepository.findById(id).get().setFirstName(newFirstName);
+        userRepository.findById(id).get().setLastName(newLastName);
+        userRepository.findById(id).get().setAge(newAge);
+        userRepository.findById(id).get().setEmail(newEmail);
+        userRepository.findById(id).get().setPassword(passwordEncoder().encode(newPassword));
         return true;
+    }
+
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
