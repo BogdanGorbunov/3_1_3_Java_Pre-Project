@@ -20,11 +20,17 @@ import java.util.List;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -48,7 +54,7 @@ public class UserService implements UserDetailsService {
         if (userRepository.findByEmail(user.getUsername()) != null) {
             return false;
         }
-        user.setPassword(passwordEncoder().encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }
@@ -69,11 +75,7 @@ public class UserService implements UserDetailsService {
         userRepository.findById(id).get().setLastName(newLastName);
         userRepository.findById(id).get().setAge(newAge);
         userRepository.findById(id).get().setEmail(newEmail);
-        userRepository.findById(id).get().setPassword(passwordEncoder().encode(newPassword));
+        userRepository.findById(id).get().setPassword(passwordEncoder.encode(newPassword));
         return true;
-    }
-
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
